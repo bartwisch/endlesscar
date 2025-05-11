@@ -12,6 +12,8 @@ import "./App.css";
 import { PostProcessing } from "./PostProcessing";
 import Model from "./Model";
 import Car from "./Car";
+import Obstacles from "./Obstacles";
+import GameOver from "./GameOver";
 
 // function Model() {
 //   const gltf = useGLTF("/scene.glb");
@@ -30,12 +32,29 @@ import Car from "./Car";
 
 function App() {
   const MODEL_LENGTH = 31.65;
+  const MODEL_SPEED = 4; // Define speed as a constant to reuse
   const [key, setKey] = useState(0); // Add a key state for forcing re-render
   const modelRefs = [
     useRef<THREE.Group>(null),
     useRef<THREE.Group>(null),
     useRef<THREE.Group>(null),
   ];
+
+  // Game state
+  const [gameOver, setGameOver] = useState(false);
+
+  // Handle collision
+  const handleCollision = () => {
+    console.log("GAME OVER triggered in App component!");
+    setGameOver(true);
+  };
+
+  // Restart game
+  const handleRestart = () => {
+    setGameOver(false);
+    // Force a re-render to reset everything
+    setKey((prev) => prev + 1);
+  };
 
   // Force a re-render after 2.5 seconds
   useEffect(() => {
@@ -48,17 +67,19 @@ function App() {
   return (
     <div className="canvas-container">
       <Canvas
+        key={key} // Add key to force full re-render on restart
         shadows="soft"
         camera={{ position: [10, 10, 40], fov: 45 }}
-        dpr={0.6}
+        dpr={1}
       >
         <color attach="background" args={["#565d6a"]} />
         <SoftShadows size={25} samples={16} focus={0.5} />
         <Environment
-          files="/city.hdr"
+          files="/forest.hdr"
           background
           blur={0.5}
           environmentIntensity={0.5}
+          backgroundIntensity={1.5}
           // ground={{
           //   height: 15, // how far above the ground the env starts projecting
           //   radius: 60, // how large the projection area is
@@ -68,9 +89,9 @@ function App() {
 
         {/* <ambientLight intensity={0.3} /> */}
         <directionalLight
-          position={[15, 10, 20]} //5,5,15
+          position={[15, 15, 20]} //5,5,15
           // color={0xfaf5e3}
-          intensity={6}
+          intensity={7}
           castShadow
           shadow-mapSize-width={4096}
           shadow-mapSize-height={4096}
@@ -171,18 +192,35 @@ function App() {
             ref={ref}
             position={[0, 0, index * MODEL_LENGTH]}
             scale={[1, 1, 1]}
-            speed={2}
+            speed={MODEL_SPEED}
             modelRefs={modelRefs}
             modelLength={MODEL_LENGTH}
           />
         ))}
-        <Car position={[0, 0.05, 0]} rotation={[0, 0, 0]} scale={0.7} />
-        <fog attach="fog" args={["#565d6a", 1, 140]} />
+        <Car
+          position={[0, 0.25, 0]}
+          rotation={[0, 0, 0]}
+          scale={0.7}
+          onCollision={handleCollision}
+        />
+
+        {/* Simple obstacles in a straight line */}
+        <Obstacles
+          position={[0, 0, 0]}
+          speed={MODEL_SPEED}
+          onCollision={handleCollision}
+        />
+
+        <fog attach="fog" args={["#78867f", 1, 140]} />
+        {/* city = 565d6a  forest = 78867f */}
 
         <OrbitControls />
         {/* <SSR /> */}
         <PostProcessing />
       </Canvas>
+
+      {/* Game over screen */}
+      {gameOver && <GameOver onRestart={handleRestart} />}
     </div>
   );
 }

@@ -3,6 +3,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  cursor: hidden;
 }
 
 body,
@@ -21,8 +22,60 @@ body,
   top: 0;
   left: 0;
   background-color: #f0f0f0;
+  cursor: none;
 }
 
-teset{
+teset {
   color: #faf5e3;
+}
+
+/* Add styles for the GameOver component at the end of the file */
+
+.game-over-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.game-over-modal {
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  width: 90%;
+}
+
+.game-over-modal h1 {
+  color: #e74c3c;
+  margin-top: 0;
+  font-size: 2.5rem;
+}
+
+.game-over-modal p {
+  margin: 1rem 0;
+  font-size: 1.2rem;
+}
+
+.game-over-modal button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.game-over-modal button:hover {
+  background-color: #2980b9;
 }

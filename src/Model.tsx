@@ -9,7 +9,7 @@ interface ModelProps {
   scale?: Vector3Tuple;
   rotation?: Vector3Tuple;
   speed?: number;
-  modelRefs: React.RefObject<THREE.Group>[];
+  modelRefs: React.RefObject<THREE.Group | null>[];
   modelLength: number;
 }
 
